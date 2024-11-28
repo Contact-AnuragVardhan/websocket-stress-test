@@ -49,7 +49,6 @@ for (let i = 0; i < numClients; i++) {
   socket.on('connect', () => {
     console.log(`Client ${i} connected as ${username}`);
 
-    // Set up listeners before emitting events
     socket.on('joined_room', (data) => {
       console.log(`${username} joined room ${data.room}`);
 
@@ -60,7 +59,6 @@ for (let i = 0; i < numClients; i++) {
       if (clientsReady === numClients) {
         console.log('All clients are connected and joined the room. Starting to send messages.');
 
-        // Start sending messages for all clients
         clients.forEach(({ socket, username }) => {
           const interval = setInterval(() => {
             const message = `Hello from ${username}`;
@@ -118,4 +116,4 @@ setTimeout(() => {
       console.log(`  - ${sender}: ${count} messages`);
     }
   }
-}, testDuration + 5000); // Wait an extra 5 seconds to ensure all messages are processed
+}, testDuration + 5000); // Waiting an extra 5 seconds to ensure all messages are processed
