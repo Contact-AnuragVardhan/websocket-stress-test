@@ -1,0 +1,35 @@
+#artillery run stress-test.yml
+#npx autocannon -c 100 -d 60 -p 10 http://localhost:3001
+config:
+  target: 'http://localhost:3001' # Change this to your server's address
+  phases:
+    - duration: 60 # Test duration in seconds
+      arrivalRate: 5 # Number of new users per second
+  processor: './processor.js' # Custom JavaScript processor to handle WebSocket events
+
+scenarios:
+  - flow:
+      - get:
+          url: "/"
+      - send:
+          json:
+            action: "user_connected"
+            username: "user_{{ $randomInt(1, 1000) }}" # Random usernames
+      - loop:
+          - flow: # The loop flow should be wrapped in an array
+              - send:
+                  json:
+                    action: "create_room"
+                    room: "room_{{ $randomInt(1, 100) }}"
+                    username: "user_{{ $randomInt(1, 1000) }}"
+              - send:
+                  json:
+                    action: "join_room"
+                    room: "room_{{ $randomInt(1, 100) }}"
+                    username: "user_{{ $randomInt(1, 1000) }}"
+              - send:
+                  json:
+                    action: "send_message"
+                    room: "room_{{ $randomInt(1, 100) }}"
+                    author: "user_{{ $randomInt(1, 1000) }}"
+                    message: "Hello from user_{{ $randomInt(1, 1000) }}!"

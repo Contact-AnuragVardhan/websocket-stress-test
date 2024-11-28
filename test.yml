@@ -1,0 +1,34 @@
+config:
+  target: "http://localhost:3001"  # Replace with your server's URL if different
+  phases:
+    - duration: 60    # Test duration in seconds
+      arrivalRate: 10 # Number of new virtual users per second
+  engines:
+    socketio: {}      # Use the Socket.io protocol
+scenarios:
+  - engine: "socketio"
+    flow:
+      - set:
+          username: "user{{ $randomInt(1, 1000000) }}"
+      - emit:
+          channel: 'user_connected'
+          data:
+            username: "{{ username }}"
+      - think: 1
+      - emit:
+          channel: 'join_room'
+          data:
+            room: "test-room"
+            username: "{{ username }}"
+      - think: 1
+      - repeat: 10
+        steps:
+          - set:
+              message: "message{{ $randomInt(1, 1000000) }}"
+          - emit:
+              channel: 'send_message'
+              data:
+                room: "test-room"
+                author: "{{ username }}"
+                message: "{{ message }}"
+          - think: 1
