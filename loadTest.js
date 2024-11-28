@@ -1,7 +1,7 @@
 // loadTest.js
 const io = require('socket.io-client');
 
-const numClients = 5;
+const numClients = 10;
 const clients = [];
 const testDuration = 60000; // Test duration in milliseconds (60 seconds)
 const messageInterval = 1500; // Interval between messages in milliseconds
